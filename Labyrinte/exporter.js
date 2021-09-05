@@ -18,7 +18,7 @@ mesh = new THREE.Mesh(geometrym, materialm);
 mesh.castShadow = false;
 mesh.position.y = 10;
 scene.add(mesh);
-
+//ceci est un commentaire
 
 
 
