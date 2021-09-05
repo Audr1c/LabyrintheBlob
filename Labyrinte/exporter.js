@@ -199,3 +199,13 @@ link.download = 'Scene.stl';
 link.click();
 // */
 //C:\Users\Audric\WebstormProjects\Labyrinte
+
+// excute function after a sleep
+
+console.log('1')
+
+setTimeout(function afterTwoSeconds() {
+  console.log('2')
+}, 2000)
+
+console.log('3')
