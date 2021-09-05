@@ -1,8 +1,11 @@
+
+//imports
 import * as THREE from './three.js-master/build/three.module.js';
-//import { saveAs } from 'file-saver';
 import {OrbitControls} from './three.js-master/examples/jsm/controls/OrbitControls.js';
 import {PLYExporter} from './three.js-master/examples/jsm/exporters/PLYExporter.js';
 
+
+//create scene
 var scene = new THREE.Scene();
 scene.background = new THREE.Color(0xa0a0a0);
 var camera = new THREE.PerspectiveCamera(75, 1080 / 720, 0.1, 1000);
@@ -16,6 +19,15 @@ const grid = new THREE.GridHelper(2000, 20, 0x000000, 0x000000);
 grid.material.opacity = 0.2;
 grid.material.transparent = true;
 scene.add(grid);
+
+// code 
+
+
+
+
+
+
+//exporter 
 
 let exporter
 exporter = new PLYExporter();
