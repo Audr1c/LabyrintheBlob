@@ -17,7 +17,7 @@ const materialm = new THREE.MeshPhongMaterial({color: 0x00ff00});
 mesh = new THREE.Mesh(geometrym, materialm);
 mesh.castShadow = false;
 mesh.position.y = 10;
-//scene.add(mesh);
+scene.add(mesh);
 
 
 
