@@ -27,6 +27,13 @@ let grid, width, height;
 
 function createGrid() {
 
+    // get values from inputs width and height
+    // and store in let width, height
+
+    width = document.getElementById('width');
+    height = document.getElementById('height');
+    console.log(width, height);
+
 }
 
 
