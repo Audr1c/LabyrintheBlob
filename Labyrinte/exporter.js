@@ -1,7 +1,7 @@
 import * as THREE from './three.js-master/build/three.module.js';
 //import { saveAs } from 'file-saver';
-import {OrbitControls} from './three.js-master/examples/jsm/controls/OrbitControls.js';
-import {PLYExporter} from './three.js-master/examples/jsm/exporters/PLYExporter.js';
+import { OrbitControls } from './three.js-master/examples/jsm/controls/OrbitControls.js';
+import { PLYExporter } from './three.js-master/examples/jsm/exporters/PLYExporter.js';
 
 var scene = new THREE.Scene();
 scene.background = new THREE.Color(0xa0a0a0);
@@ -12,7 +12,7 @@ var camera = new THREE.PerspectiveCamera(75, 1080 / 720, 0.1, 1000);
 let mesh, exporter
 exporter = new PLYExporter();
 const geometrym = new THREE.BoxGeometry(1, 1, 1);
-const materialm = new THREE.MeshPhongMaterial({color: 0x00ff00});
+const materialm = new THREE.MeshPhongMaterial({ color: 0x00ff00 });
 
 mesh = new THREE.Mesh(geometrym, materialm);
 mesh.castShadow = false;
@@ -27,20 +27,20 @@ scene.add(mesh);
 const geometryt = new THREE.BufferGeometry();
 // create a simple square shape. We duplicate the top left and bottom right
 // vertices because each vertex needs to appear once per triangle.
-const vertices = new Float32Array( [
-	-1.0, -1.0,  1.0,
-	 1.0, -1.0,  1.0,
-	 1.0,  1.0,  1.0,
+const vertices = new Float32Array([
+    -1.0, -1.0, 1.0,
+    1.0, -1.0, 1.0,
+    1.0, 1.0, 1.0,
 
-	 1.0,  1.0,  1.0,
-	-1.0,  1.0,  1.0,
-	-1.0, -1.0,  1.0
-] );
+    1.0, 1.0, 1.0,
+    -1.0, 1.0, 1.0,
+    -1.0, -1.0, 1.0
+]);
 
 // itemSize = 3 because there are 3 values (components) per vertex
-geometryt.setAttribute( 'position', new THREE.BufferAttribute( vertices, 3 ) );
-const materialt = new THREE.MeshBasicMaterial( { color: 0xff0000 } );
-const mesht = new THREE.Mesh( geometryt, materialt );
+geometryt.setAttribute('position', new THREE.BufferAttribute(vertices, 3));
+const materialt = new THREE.MeshBasicMaterial({ color: 0xff0000 });
+const mesht = new THREE.Mesh(geometryt, materialt);
 scene.add(mesht)
 
 
@@ -49,26 +49,26 @@ const length = 2, width = 2;
 let posX = 5, posY = 5;
 
 const shape = new THREE.Shape();
-shape.moveTo( posX,posY );
-shape.lineTo( posX, width+posY );
-shape.lineTo( length+posX, width+posY );
-shape.lineTo( length+posX, posY );
-shape.lineTo( posX, posY );
+shape.moveTo(posX, posY);
+shape.lineTo(posX, width + posY);
+shape.lineTo(length + posX, width + posY);
+shape.lineTo(length + posX, posY);
+shape.lineTo(posX, posY);
 
 const extrudeSettings = {
-	steps: 2,
-	depth: 4,
-	bevelEnabled: false,
-	bevelThickness: 1,
-	bevelSize: 1,
-	bevelOffset: 0,
-	bevelSegments: 1
+    steps: 2,
+    depth: 4,
+    bevelEnabled: false,
+    bevelThickness: 1,
+    bevelSize: 1,
+    bevelOffset: 0,
+    bevelSegments: 1
 };
 
-const geometryv = new THREE.ExtrudeGeometry( shape, extrudeSettings );
-const materialv = new THREE.MeshBasicMaterial( { color: 0xaa224b } );
-const meshv = new THREE.Mesh( geometryv, materialv ) ;
-scene.add( meshv );
+const geometryv = new THREE.ExtrudeGeometry(shape, extrudeSettings);
+const materialv = new THREE.MeshBasicMaterial({ color: 0xaa224b });
+const meshv = new THREE.Mesh(geometryv, materialv);
+scene.add(meshv);
 
 // camera.lookAt(0,0,0)
 
@@ -94,13 +94,13 @@ scene.add(grid);
 
 
 var geometry = new THREE.BoxGeometry(2, 2, 2, 2);
-var material = new THREE.MeshBasicMaterial({color: 0x00ff00, opacity: 0.5, transparent: true});
+var material = new THREE.MeshBasicMaterial({ color: 0x00ff00, opacity: 0.5, transparent: true });
 var cube = new THREE.Mesh(geometry, material);
 scene.add(cube);
 let cubes = []
 for (let i = 0; i < 5; i++) {
     var geometrycubes = new THREE.BoxGeometry(2 * Math.random(), 2 * Math.random(), 2 * Math.random(), 1);
-    var materialcubes = new THREE.MeshBasicMaterial({color: 0x00ff00, opacity: Math.random(), transparent: true});
+    var materialcubes = new THREE.MeshBasicMaterial({ color: 0x00ff00, opacity: Math.random(), transparent: true });
     cubes.push(new THREE.Mesh(geometrycubes, materialcubes));
     cubes[i].position.x = Math.random() * 3;
     cubes[i].position.y = Math.random() * 3;
@@ -174,13 +174,13 @@ function save(blob, filename) {
 
 function saveString(text, filename) {
 
-    save(new Blob([text], {type: 'text/plain'}), filename);
+    save(new Blob([text], { type: 'text/plain' }), filename);
 
 }
 
 function saveArrayBuffer(buffer, filename) {
 
-    save(new Blob([buffer], {type: 'application/octet-stream'}), filename);
+    save(new Blob([buffer], { type: 'application/octet-stream' }), filename);
 
 }
 

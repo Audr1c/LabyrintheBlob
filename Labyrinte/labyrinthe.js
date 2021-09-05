@@ -1,8 +1,8 @@
 
 //imports
 import * as THREE from './three.js-master/build/three.module.js';
-import {OrbitControls} from './three.js-master/examples/jsm/controls/OrbitControls.js';
-import {PLYExporter} from './three.js-master/examples/jsm/exporters/PLYExporter.js';
+import { OrbitControls } from './three.js-master/examples/jsm/controls/OrbitControls.js';
+import { PLYExporter } from './three.js-master/examples/jsm/exporters/PLYExporter.js';
 
 
 //create scene
@@ -22,6 +22,12 @@ scene.add(grid);
 
 // code 
 
+let grid, width, height;
+
+
+function createGrid() {
+
+}
 
 
 
@@ -60,6 +66,6 @@ function save(blob, filename) {
 
 function saveString(text, filename) {
 
-    save(new Blob([text], {type: 'text/plain'}), filename);
+    save(new Blob([text], { type: 'text/plain' }), filename);
 
 }
