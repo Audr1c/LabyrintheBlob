@@ -10,6 +10,8 @@ var scene = new THREE.Scene();
 scene.background = new THREE.Color(0xa0a0a0);
 var camera = new THREE.PerspectiveCamera(75, 1080 / 720, 0.1, 1000);
 
+
+//render 
 var renderer = new THREE.WebGLRenderer();
 renderer.setSize(window.innerWidth, window.innerHeight);
 document.body.appendChild(renderer.domElement);
@@ -20,21 +22,34 @@ grid.material.opacity = 0.2;
 grid.material.transparent = true;
 scene.add(grid);
 
-// code 
+// code
 
-let grid, width, height;
+let gridLab, width, height;
 
+const buttoncreateGrid = document.getElementById('creteGrid');
+buttoncreateGrid.addEventListener('click', createGrid);
 
 function createGrid() {
 
     // get values from inputs width and height
     // and store in let width, height
 
-    width = document.getElementById('width');
-    height = document.getElementById('height');
+    width = document.getElementById('width').value;
+    height = document.getElementById('height').value;
     console.log(width, height);
 
+
 }
+
+//animate 
+
+//function animate() {
+//    requestAnimationFrame(animate);
+//    controls.update();
+//    renderer.render(scene, camera);
+//}
+//animate();
+//
 
 
 
