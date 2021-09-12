@@ -24,6 +24,36 @@ grid.material.opacity = 0.2;
 grid.material.transparent = true;
 scene.add(grid);
 
+//Create a WebGLRenderer and turn on shadows in the renderer
+renderer.shadowMap.enabled = true;
+renderer.shadowMap.type = THREE.PCFSoftShadowMap; // default THREE.PCFShadowMap
+
+//Create a DirectionalLight and turn on shadows for the light
+const light = new THREE.DirectionalLight( 0xffffff, 1, 100 );
+light.position.set( 0, 1, 0 ); //default; light shining from top
+light.castShadow = true; // default false
+scene.add( light );
+
+//Set up shadow properties for the light
+light.shadow.mapSize.width = 512; // default
+light.shadow.mapSize.height = 512; // default
+light.shadow.camera.near = 0.5; // default
+light.shadow.camera.far = 500; // default
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 // code
 
 let gridLab = [[]],
@@ -219,6 +249,8 @@ function showGrid(Grid) {
           transparent: true,
         });
         var cube = new THREE.Mesh(geometry, material);
+        cube.castShadow = false;
+        cube.receiveShadow = true;
         scene.add(cube);
         cube.position.x = j * widthCube - orginX;
         cube.position.y = depthCube / 2;
@@ -281,3 +313,7 @@ function save(blob, filename) {
 function saveString(text, filename) {
   save(new Blob([text], { type: "text/plain" }), filename);
 }
+
+
+
+
