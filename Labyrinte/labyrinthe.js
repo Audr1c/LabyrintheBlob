@@ -29,30 +29,16 @@ renderer.shadowMap.enabled = true;
 renderer.shadowMap.type = THREE.PCFSoftShadowMap; // default THREE.PCFShadowMap
 
 //Create a DirectionalLight and turn on shadows for the light
-const light = new THREE.DirectionalLight( 0xffffff, 1, 100 );
-light.position.set( 0, 1, 0 ); //default; light shining from top
+const light = new THREE.DirectionalLight(0xffffff, 1, 100);
+light.position.set(0, 1, 0); //default; light shining from top
 light.castShadow = true; // default false
-scene.add( light );
+scene.add(light);
 
 //Set up shadow properties for the light
 light.shadow.mapSize.width = 512; // default
 light.shadow.mapSize.height = 512; // default
 light.shadow.camera.near = 0.5; // default
 light.shadow.camera.far = 500; // default
-
-
-
-
-
-
-
-
-
-
-
-
-
-
 
 // code
 
@@ -63,7 +49,7 @@ let gridLab = [[]],
 const buttoncreateGrid = document.getElementById("creteGrid");
 buttoncreateGrid.addEventListener("click", ButtoncreateGrid);
 
-function ButtoncreateGrid(){
+function ButtoncreateGrid() {
   createGrid();
 }
 
@@ -86,14 +72,24 @@ function createGrid() {
   for (let i = 0; i < height - 1; i++) {
     //console.log("tempIN:",temporay_line);
     gridLab.push([...temporay_line]);
-  } // gridLab :
-  /*    [1,1,1,...,1,1,1],
-         [1,1,1,...,1,1,1],
-         .
-         .
-         .
-         [1,1,1,...,1,1,1],
-         [1,1,1,...,1,1,1]
+  }
+
+  for (let j = 0; j < height; j++) {
+    gridLab[0][j] = 2;
+    gridLab[width - 1][j] = 2;
+  }
+  for (let i = 0; i < width; i++) {
+    gridLab[i][0] = 2;
+    gridLab[i][height - 1] = 2;
+  }
+  // gridLab :
+  /*    [2,2,2,...,2,2,2],
+        [2,1,1,...,1,1,2],
+        .
+        .
+        .
+        [2,1,1,...,1,1,2],
+        [2,2,2,...,2,2,2]
    */
 
   // get valueAtPos = gridLab[x][y]
@@ -138,16 +134,23 @@ function algo1(Grid) {
     x = fille_d_attente[0][0];
     y = fille_d_attente[0][1];
     Grid[x][y] = 0;
-    tuple_to_add = getWall(x, y, Grid[0].length, Grid.length);
-    for (let k = 0; k < tuple_to_add.length; k++) {
-      if (Grid[tuple_to_add[k][0]][tuple_to_add[k][1]] == 1) {
-        if (checkWall(tuple_to_add[k][0], tuple_to_add[k][1], Grid)) {
-          fille_d_attente.push(tuple_to_add[k]);
+    if (checkWall(x, y, Grid)) {
+      tuple_to_add = getWall(x, y, Grid[0].length, Grid.length);
+      for (let k = 0; k < tuple_to_add.length; k++) {
+        if (Grid[tuple_to_add[k][0]][tuple_to_add[k][1]] == 1) {
+          if (checkWall(tuple_to_add[k][0], tuple_to_add[k][1], Grid)) {
+            fille_d_attente.push(tuple_to_add[k]);
+          }
         }
       }
     }
     fille_d_attente.splice(0, 1);
     fille_d_attente = uniq_fast([...fille_d_attente]);
+    //let fille_d_attenteShuffled = fille_d_attente
+    //  .map((value) => ({ value, sort: Math.random() }))
+    //  .sort((a, b) => a.sort - b.sort)
+    //  .map(({ value }) => value);
+    //fille_d_attente = fille_d_attenteShuffled;
     //console.log(fille_d_attente);
   }
 
@@ -192,19 +195,31 @@ function checkWall(x, y, Grid) {
   for (let i = -1; i <= 1; i++) {
     for (let j = -1; j <= 1; j++) {
       //console.log("g[",x+i,"]","[",y+j,"]  =", Grid[x+i][y+j])
-      if (Grid[x+i][y+j] == 0 && !(x == i && y == j)) {
+      if (Grid[x + i][y + j] == 0 && !(x == i && y == j)) {
         countALL++;
       }
     }
   }
   let countDiagnols = countALL - countSides;
 
- 
   let diagnos = false;
-  if (countSides <= 1 && countDiagnols <= 1) {
+  if (countSides <= 1 && countDiagnols <= 2) {
     diagnos = true;
   }
-  console.log("A ", countALL, "  S ", countSides, "  D ", countDiagnols, "result", diagnos);
+  console.log(
+    "x",
+    x,
+    "y",
+    y,
+    "A ",
+    countALL,
+    "  S ",
+    countSides,
+    "  D ",
+    countDiagnols,
+    "result",
+    diagnos
+  );
   return diagnos;
 }
 
@@ -214,13 +229,15 @@ function getWall(x, y, width, height) {
   if (x + 1 < width - 1) {
     tupleToReturn.push([x + 1, y]);
   }
-  //
+  //test for x-1, y
   if (x - 1 >= 1) {
     tupleToReturn.push([x - 1, y]);
   }
+  //test for x, y-1
   if (y - 1 >= 1) {
     tupleToReturn.push([x, y - 1]);
   }
+  //test for x, y+1
   if (y + 1 < height - 1) {
     tupleToReturn.push([x, y + 1]);
   }
@@ -241,20 +258,10 @@ function showGrid(Grid) {
   for (let i = 0; i < height; i++) {
     for (let j = 0; j < width; j++) {
       if (Grid[i][j] == 1) {
-        //console.log(i*widthCube,j*depthCube)
-        var geometry = new THREE.BoxGeometry(widthCube, depthCube, heightCube);
-        var material = new THREE.MeshBasicMaterial({
-          color: 0xf1c251,
-          opacity: 1,
-          transparent: true,
-        });
-        var cube = new THREE.Mesh(geometry, material);
-        cube.castShadow = false;
-        cube.receiveShadow = true;
-        scene.add(cube);
-        cube.position.x = j * widthCube - orginX;
-        cube.position.y = depthCube / 2;
-        cube.position.z = i * heightCube - orginZ;
+        putCube(0xf1c251, i, j, orginX, orginZ);
+      }
+      if (Grid[i][j] == 2) {
+        putCube(0x22f000, i, j, orginX, orginZ);
       }
     }
   }
@@ -273,6 +280,22 @@ function showGrid(Grid) {
   platform.position.x = 0 - widthCube / 2;
   platform.position.y = 0;
   platform.position.z = 0 - heightCube / 2;
+}
+function putCube(color_arg, i, j, orginX, orginZ) {
+  //console.log(i*widthCube,j*depthCube)
+  var geometry = new THREE.BoxGeometry(widthCube, depthCube, heightCube);
+  var material = new THREE.MeshBasicMaterial({
+    color: color_arg,
+    opacity: 1,
+    transparent: true,
+  });
+  var cube = new THREE.Mesh(geometry, material);
+  cube.castShadow = false;
+  cube.receiveShadow = true;
+  scene.add(cube);
+  cube.position.x = j * widthCube - orginX;
+  cube.position.y = depthCube / 2;
+  cube.position.z = i * heightCube - orginZ;
 }
 
 //animate
@@ -313,7 +336,3 @@ function save(blob, filename) {
 function saveString(text, filename) {
   save(new Blob([text], { type: "text/plain" }), filename);
 }
-
-
-
-
