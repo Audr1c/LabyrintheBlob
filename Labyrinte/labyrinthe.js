@@ -19,10 +19,10 @@ camera.position.z = 5;
 camera.position.y = 5;
 camera.rotateX(-0.6);
 
-const grid = new THREE.GridHelper(20, 200, 0x00000, 0x000000);
-grid.material.opacity = 0.2;
-grid.material.transparent = true;
-scene.add(grid);
+const Grid = new THREE.GridHelper(20, 200, 0x00000, 0x000000);
+Grid.material.opacity = 0.2;
+Grid.material.transparent = true;
+scene.add(Grid);
 
 //Create a WebGLRenderer and turn on shadows in the renderer
 renderer.shadowMap.enabled = true;
@@ -43,22 +43,28 @@ light.shadow.camera.far = 500; // default
 // code
 
 let gridLab = [[]],
-  width = 20,
-  height = 20;
+  width = 50,
+  height = 50;
 
 const buttoncreateGrid = document.getElementById("creteGrid");
 buttoncreateGrid.addEventListener("click", ButtoncreateGrid);
 
 function ButtoncreateGrid() {
-  createGrid();
+  width = document.getElementById("width").value;
+  height = document.getElementById("height").value;
+  createGrid(width, height);
 }
 
-function createGrid() {
+
+
+let created = false;
+
+function createGrid(width, height) {
+
   // get values from inputs width and height
   // and store in let width, height
 
-  width = document.getElementById("width").value;
-  height = document.getElementById("height").value;
+
   console.log(width, height);
 
   //store one's in gridLab in a 2D array of width and height
@@ -94,67 +100,75 @@ function createGrid() {
 
   // get valueAtPos = gridLab[x][y]
 
-  //algo that crave in the grid
+  //algo that crave in the gridLab
 
-  gridLab = algo1([...gridLab]);
-
+  gridLab = algo1();
+  created = true;
   //console.log(gridLab);
-  showGrid(gridLab);
+
 }
-//createGrid(1);
+//creategridLab(1);
 
 // algo remove random bits
-function random(Grid) {
+function random() {
   for (let k = 0; k < 50; k++) {
     let x = randomNum(1, width - 1);
     //let x = randomNum(0, width);
     let y = randomNum(1, height - 1);
     //console.log("removed",k,":",x,",",y,"prevValue =",gridLab);
 
-    Grid[x][y] = 0;
+    gridLab[x][y] = 0;
     //console.log("after :",gridLab);
   }
-  return Grid;
+  return gridLab;
 }
 
+let loops = 0;
+let fille_d_attente = [];
 //algo function
-function algo1(Grid) {
-  let fille_d_attente = [];
+function algo1() {
+
   let x = randomNum(1, width - 1);
   let y = randomNum(1, height - 1);
-  Grid[x][y] = 0;
-  let tuple_to_add = getWall(x, y, Grid[0].length, Grid.length);
+  gridLab[x][y] = 0;
+  let tuple_to_add = getWall(x, y, gridLab[0].length, gridLab.length);
   for (let k = 0; k < tuple_to_add.length; k++) {
     fille_d_attente.push(tuple_to_add[k]);
   }
 
-  let loops = 0;
-  while (fille_d_attente.length > 0 && loops < 5000) {
-    loops++;
-    x = fille_d_attente[0][0];
-    y = fille_d_attente[0][1];
-    Grid[x][y] = 0;
-    if (checkWall(x, y, Grid)) {
-      tuple_to_add = getWall(x, y, Grid[0].length, Grid.length);
-      for (let k = 0; k < tuple_to_add.length; k++) {
-        if (Grid[tuple_to_add[k][0]][tuple_to_add[k][1]] == 1) {
-          if (checkWall(tuple_to_add[k][0], tuple_to_add[k][1], Grid)) {
-            fille_d_attente.push(tuple_to_add[k]);
-          }
-        }
+
+  //while (fille_d_attente.length > 0 && loops < 5000) {
+  //  
+  //}
+
+  return gridLab;
+}
+
+function algo1Run() {
+  loops++;
+  let x = fille_d_attente[0][0];
+  let y = fille_d_attente[0][1];
+  gridLab[x][y] = 0;
+  if (checkWall(x, y)) {
+    let tuple_to_add = getWall(x, y, gridLab[0].length, gridLab.length);
+    for (let k = 0; k < tuple_to_add.length; k++) {
+      let valueG = gridLab[tuple_to_add[k][0]][tuple_to_add[k][1]];
+      if (valueG == 1 || valueG == 3) {
+        //if (checkWall(tuple_to_add[k][0], tuple_to_add[k][1])) {
+          fille_d_attente.push(tuple_to_add[k]);
+          gridLab[tuple_to_add[k][0]][tuple_to_add[k][1]] = 3;
+        //}
       }
     }
-    fille_d_attente.splice(0, 1);
-    fille_d_attente = uniq_fast([...fille_d_attente]);
-    //let fille_d_attenteShuffled = fille_d_attente
-    //  .map((value) => ({ value, sort: Math.random() }))
-    //  .sort((a, b) => a.sort - b.sort)
-    //  .map(({ value }) => value);
-    //fille_d_attente = fille_d_attenteShuffled;
-    //console.log(fille_d_attente);
   }
-
-  return Grid;
+  fille_d_attente.splice(0, 1);
+  fille_d_attente = uniq_fast([...fille_d_attente]);
+  //let fille_d_attenteShuffled = fille_d_attente
+  //  .map((value) => ({ value, sort: Math.random() }))
+  //  .sort((a, b) => a.sort - b.sort)
+  //  .map(({ value }) => value);
+  //fille_d_attente = fille_d_attenteShuffled;
+  //console.log(fille_d_attente);
 }
 
 function uniq_fast(a) {
@@ -171,31 +185,31 @@ function uniq_fast(a) {
   }
   return out;
 }
-function checkWall(x, y, Grid) {
+function checkWall(x, y) {
   let countSides = 0;
 
   //Right
-  if (Grid[x + 1][y] == 0) {
+  if (gridLab[x + 1][y] == 0) {
     countSides++;
   }
   //Left
-  if (Grid[x - 1][y] == 0) {
+  if (gridLab[x - 1][y] == 0) {
     countSides++;
   }
   //Down
-  if (Grid[x][y + 1] == 0) {
+  if (gridLab[x][y + 1] == 0) {
     countSides++;
   }
   //Up
-  if (Grid[x][y - 1] == 0) {
+  if (gridLab[x][y - 1] == 0) {
     countSides++;
   }
 
   let countALL = 0;
   for (let i = -1; i <= 1; i++) {
     for (let j = -1; j <= 1; j++) {
-      //console.log("g[",x+i,"]","[",y+j,"]  =", Grid[x+i][y+j])
-      if (Grid[x + i][y + j] == 0 && !(x == i && y == j)) {
+      //console.log("g[",x+i,"]","[",y+j,"]  =", gridLab[x+i][y+j])
+      if (gridLab[x + i][y + j] == 0 && !(x == i && y == j)) {
         countALL++;
       }
     }
@@ -206,20 +220,20 @@ function checkWall(x, y, Grid) {
   if (countSides <= 1 && countDiagnols <= 2) {
     diagnos = true;
   }
-  console.log(
-    "x",
-    x,
-    "y",
-    y,
-    "A ",
-    countALL,
-    "  S ",
-    countSides,
-    "  D ",
-    countDiagnols,
-    "result",
-    diagnos
-  );
+  //console.log(
+  //  "x",
+  //  x,
+  //  "y",
+  //  y,
+  //  "A ",
+  //  countALL,
+  //  "  S ",
+  //  countSides,
+  //  "  D ",
+  //  countDiagnols,
+  //  "result",
+  //  diagnos
+  //);
   return diagnos;
 }
 
@@ -252,16 +266,19 @@ let heightCube = 0.1,
   widthCube = 0.1,
   depthCube = 0.15;
 
-function showGrid(Grid) {
+function showgridLab() {
   let orginX = (widthCube * width) / 2,
     orginZ = (heightCube * height) / 2;
   for (let i = 0; i < height; i++) {
     for (let j = 0; j < width; j++) {
-      if (Grid[i][j] == 1) {
+      if (gridLab[i][j] == 1) {
         putCube(0xf1c251, i, j, orginX, orginZ);
       }
-      if (Grid[i][j] == 2) {
+      if (gridLab[i][j] == 2) {
         putCube(0x22f000, i, j, orginX, orginZ);
+      }
+      if (gridLab[i][j] == 3) {
+        putCube(0xc21212, i, j, orginX, orginZ);
       }
     }
   }
@@ -292,18 +309,45 @@ function putCube(color_arg, i, j, orginX, orginZ) {
   var cube = new THREE.Mesh(geometry, material);
   cube.castShadow = false;
   cube.receiveShadow = true;
+  cube.name = "cube" + i + "" + j;
   scene.add(cube);
   cube.position.x = j * widthCube - orginX;
   cube.position.y = depthCube / 2;
   cube.position.z = i * heightCube - orginZ;
 }
 
+function removeCubes() {
+  for (let i = 0; i < width; i++) {
+    for (let j = 0; j < height; j++) {
+      let nameObj = "cube" + i + "" + j;
+      let selectedObject = scene.getObjectByName(nameObj);
+      scene.remove(selectedObject);
+
+    }
+  }
+}
+createGrid(width, height);
 //animate
 
 function animate() {
-  requestAnimationFrame(animate);
+  
   controls.update();
+  //timout
   renderer.render(scene, camera);
+  if (created) {
+    setInterval(function afterTwoSeconds() {
+      requestAnimationFrame(animate);
+      if (fille_d_attente.length > 0) {
+        algo1Run()
+        console.log(gridLab)
+      } else {
+        console.log('finished')
+      }
+      removeCubes();
+      showgridLab();
+    }, 2000)
+    
+  }
 }
 animate();
 
